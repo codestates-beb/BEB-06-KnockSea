@@ -1,6 +1,7 @@
 import Nav from "./components/Nav";
 import Main from "./components/Main";
 import ProfilePage from "./pages/ProfilePage";
+import ExplorePage from "./pages/ExplorePage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NFTpage from "./pages/NFTpage";
 import MintingPage from "./pages/MintingPage";
@@ -17,9 +18,9 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/nftpage" element={<NFTpage />} />
           <Route path="/create" element={<MintingPage />} />
-          {/* <Route path="/trade" element={<Trade />} />
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/stats" element={<Stats />} />
+          {/* <Route path="/trade" element={<Trade />} /> */}
+          <Route path="/explore" element={<ExplorePage />} />
+          {/* <Route path="/stats" element={<Stats />} />
           <Route path="/resources" element={<Resources />} /> */}
         </Routes>
       </Router>
