@@ -48,7 +48,7 @@ function Nav() {
 
   //로그아웃
   const onClickDisConnect = async () => {
-    setAccount(account === "");
+    setAccount("");
     await axios
       .post(
         "http://localhost:5000/users/logout",
@@ -114,7 +114,7 @@ function Nav() {
         </Link>
 
         <div>
-          {button ? (
+          {account ? (
             <div>
               <button
                 className="disconnectedButton"

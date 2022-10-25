@@ -2,16 +2,23 @@ import React, { useState, useRef, useMemo } from "react";
 import "../assets/MintingPage.css";
 import BlankImage from "../assets/img/uploadImage.png";
 import axios from "axios";
-
-//
+import { minting, getContract } from "../models/index";
+import LoadingModal from "../components/LoadingModal";
+import getMetaMask from "../models/getWallet";
 
 const MintingPage = () => {
-  //input 값 상태관리
+  // loading spinner 구현을 위한 상태관리
+  const [isLoading, setIsLoading] = useState(false);
 
+  //이미지 파일 넘기기 formdata
+  const [image, setImage] = useState({});
+
+  //input 값 상태관리
   const [metadata, setMetadata] = useState({
     name: "",
     desc: "",
   });
+
   const account = localStorage.getItem("userId");
 
   // const { name, desc, src } = metadata;
@@ -35,20 +42,8 @@ const MintingPage = () => {
   const uploadImage = (e) => {
     //📌이미지 미리보기를 위한 url 및 img 상태관리
     const url = URL.createObjectURL(e.target.files[0]);
-
     setImgFile(url);
-
-    //📌위와 별도로 이미지 formdata로 데이터 넘겨주는 작업
-    const formData = new FormData();
-    formData.append("src", e.target.files[0]);
-    var options = { content: formData };
-
-    for (let key of formData.keys()) {
-      console.log(key);
-    }
-    for (let value of formData.values()) {
-      console.log(value);
-    }
+    setImage(e.target.files[0]);
   };
 
   //이미지 미리보기 부분
@@ -61,38 +56,74 @@ const MintingPage = () => {
       );
   });
 
-  //create 버튼 클릭
-  const createHandler = (e) => {
-    let formData = new FormData();
-    formData.append("file", imgFile);
-    console.log("이미지파일", imgFile);
-    console.log(metadata);
-    console.log(formData);
-    //여기서 formData처리와 axios 처리를 해야함
-    let body = {
-      ...metadata,
-      account,
-    };
+  const checkElement = () => {
+    if (metadata && imgFile) {
+      return true;
+    } else return false;
+  };
 
-    // axios
-    //   .post(
-    //     "http://localhost:5000/users/minting",
-    //     { formData, body },
-    //     { withCredentials: true }
-    //   )
-    //   .then((response) => {
-    //     console.log(response);
-    //   });
+  //create 버튼 클릭
+  const createHandler = async (e) => {
+    e.preventDefault();
+    if (checkElement()) {
+      setIsLoading(true);
+
+      const account = await getMetaMask();
+      const nftContract = getContract();
+      const newNftTokenURI = await minting(account, nftContract);
+
+      if (newNftTokenURI) {
+        try {
+          let formData = new FormData();
+          formData.append("file", image);
+          formData.append("name", metadata.name);
+          formData.append("desc", metadata.desc);
+          formData.append("account", account);
+
+          for (let key of formData.keys()) {
+            console.log(key);
+          }
+          for (let value of formData.values()) {
+            console.log(value);
+          }
+
+          //❗❗여기서 formData처리와 axios 처리를 해야함
+
+          axios
+            .post(
+              "http://localhost:5000/users/minting",
+
+              formData,
+
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true,
+              }
+            )
+            .then((response) => {
+              console.log(response);
+            });
+
+          setIsLoading(false);
+          alert("..드디어 성공인가?");
+        } catch (e) {
+          console.error();
+        }
+      }
+    } else {
+      alert("파일 업로드 후 이름, 설명을 모두 적어주세요.");
+    }
   };
 
   return (
     <React.Fragment>
+      {isLoading && <LoadingModal />}
       <h1 className="minting-title">Create New Item</h1>
       <h2 className="minting-subtitle">NFT Image Upload</h2>
-
       <div>
         {showImage}
-
         <input
           name="src"
           type="file"
