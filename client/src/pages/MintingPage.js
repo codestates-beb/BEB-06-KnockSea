@@ -10,9 +10,6 @@ const MintingPage = () => {
   // loading spinner 구현을 위한 상태관리
   const [isLoading, setIsLoading] = useState(false);
 
-  //이미지 파일 넘기기 formdata
-  const [image, setImage] = useState({});
-
   //input 값 상태관리
   const [metadata, setMetadata] = useState({
     name: "",
@@ -31,6 +28,9 @@ const MintingPage = () => {
     });
   };
 
+  //이미지 파일 넘기기 formdata
+  const [image, setImage] = useState({});
+
   //img 관리
   const [imgFile, setImgFile] = useState({});
   const fileInputRef = useRef(null);
@@ -43,6 +43,9 @@ const MintingPage = () => {
     //📌이미지 미리보기를 위한 url 및 img 상태관리
     const url = URL.createObjectURL(e.target.files[0]);
     setImgFile(url);
+
+    //📌위와 별도로 이미지 formdata로 데이터 넘겨주는 작업
+    // const formData = new FormData();
     setImage(e.target.files[0]);
   };
 
