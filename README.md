@@ -64,7 +64,7 @@ KNOCKSEA is an ethereum-based NFT marketplace where anyone can create, collect a
 | IPFS |  | Express |
 |  |  | mongoDB |
 |  |  | Mongoose |
-|  |  | AWS EC2 |
+|  |  | AWS S3 |
 
 
 ### 🔍 Team
