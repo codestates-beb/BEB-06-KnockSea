@@ -1,4 +1,4 @@
-# BEB-06-FIRST-10# BEB-06-KnockSea
+# BEB-06-KnockSea
 
 ### 🔍 About
 
