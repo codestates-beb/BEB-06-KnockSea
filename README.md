@@ -1,5 +1,7 @@
 # BEB-06-KnockSea
 
+![knocksea-banner](https://user-images.githubusercontent.com/108772055/197935964-c735a623-84ce-47a4-b0c8-34ea1fcb9448.png)
+
 ### 🔍 About
 
 ---
