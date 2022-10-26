@@ -20,7 +20,7 @@ router.post(
   mintingController.post
 );
 //민팅한 모든 NftList 가져오기(로그인안한 상태)
-router.get("/nftlist", isNotLoggedIn, mintingController.get);
+router.get("/nftlist", mintingController.get);
 
 //사용자 정보 가져오기(로그인한 상태)
 router.get("/users/mypage", isLoggedIn, usersInfoController.get);

@@ -12,11 +12,10 @@ module.exports = {
 
     // 모든 것 세션 유지
 
-    const imageUrl = req.file.location;
-    const { account, name, desc } = req.body;
+    // const imageUrl = req.file.location;
+    const { account, name, desc, tokenId, image } = req.body;
 
     //더미데이터로 테스트 나중에 스마트 컨트랙트 이후 tokenId 로 변경
-    const tokenId = "1";
 
     try {
       //TODO(v) NFT 데이터들을 DATABASE에 저장하는 코드 작성 -- 민팅
@@ -26,7 +25,7 @@ module.exports = {
         if (wallet) {
           newToken = {
             tokenId: tokenId,
-            imageUrl: imageUrl,
+            imageUrl: image,
             name: name,
             description: desc,
           };
@@ -42,7 +41,7 @@ module.exports = {
           );
           NftMeta.create({
             tokenId: tokenId,
-            imageUrl: imageUrl,
+            imageUrl: image,
             name: name,
             description: desc,
           });
@@ -54,7 +53,7 @@ module.exports = {
             tokenList: [
               {
                 tokenId: tokenId,
-                imageUrl: imageUrl,
+                imageUrl: image,
                 name: name,
                 description: desc,
               },
@@ -63,7 +62,7 @@ module.exports = {
           //TODO(v) : 새로 민팅시 메타데이터 스키마에 저장
           NftMeta.create({
             tokenId: tokenId,
-            imageUrl: imageUrl,
+            imageUrl: image,
             name: name,
             description: desc,
           });

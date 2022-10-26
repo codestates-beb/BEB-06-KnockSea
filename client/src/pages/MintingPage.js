@@ -2,9 +2,11 @@ import React, { useState, useRef, useMemo } from "react";
 import "../assets/MintingPage.css";
 import BlankImage from "../assets/img/uploadImage.png";
 import axios from "axios";
-import { minting, getContract } from "../models/index";
+import { minting, getContract, getTokenId } from "../models/index";
 import LoadingModal from "../components/LoadingModal";
 import getMetaMask from "../models/getWallet";
+import { NFTStorage } from "nft.storage";
+import APIKey from "../models/APIKey";
 
 const MintingPage = () => {
   // loading spinner 구현을 위한 상태관리
@@ -17,8 +19,6 @@ const MintingPage = () => {
   });
 
   const account = localStorage.getItem("userId");
-
-  // const { name, desc, src } = metadata;
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -71,49 +71,62 @@ const MintingPage = () => {
     if (checkElement()) {
       setIsLoading(true);
 
-      const account = await getMetaMask();
-      const nftContract = getContract();
-      const newNftTokenURI = await minting(account, nftContract);
+      console.log(APIKey);
 
-      if (newNftTokenURI) {
-        try {
-          let formData = new FormData();
-          formData.append("file", image);
-          formData.append("name", metadata.name);
-          formData.append("desc", metadata.desc);
-          formData.append("account", account);
+      try {
+        const nftStorage = {
+          image: image,
+          name: metadata.name,
+          description: metadata.desc,
+        };
 
-          for (let key of formData.keys()) {
-            console.log(key);
-          }
-          for (let value of formData.values()) {
-            console.log(value);
-          }
+        const client = new NFTStorage({ token: APIKey });
+        console.log(client);
+        const nftMetadata = await client.store(nftStorage);
+        console.log(nftMetadata);
+        const metadataUrl = `https://ipfs.io/ipfs/${nftMetadata.data.image.pathname}`;
+        console.log(metadataUrl);
+        console.log("NFT data stored!");
 
-          //❗❗여기서 formData처리와 axios 처리를 해야함
+        const jsonData = JSON.stringify(nftMetadata.data);
+        const obj = JSON.parse(jsonData);
+        const replaceUrl = obj.image.replace(
+          "ipfs://",
+          "https://ipfs.io/ipfs/"
+        );
 
-          axios
-            .post(
-              "http://localhost:5000/users/minting",
+        // const account = await getMetaMask();
+        const nftContract = getContract();
+        const newNftTokenURI = await minting(account, nftContract, replaceUrl);
 
-              formData,
+        axios
+          .post(
+            "http://localhost:5000/users/minting",
 
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-                withCredentials: true,
-              }
-            )
-            .then((response) => {
-              console.log(response);
-            });
+            {
+              account: account,
+              image: replaceUrl,
+              name: metadata.name,
+              description: metadata.desc,
+              tokenId: newNftTokenURI,
+            },
 
-          setIsLoading(false);
-          alert("..드디어 성공인가?");
-        } catch (e) {
-          console.error();
-        }
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+              withCredentials: true,
+            }
+          )
+          .then((response) => {
+            console.log(response);
+          });
+
+        setIsLoading(false);
+        alert("성공!");
+      } catch (e) {
+        console.error();
+        // }
       }
     } else {
       alert("파일 업로드 후 이름, 설명을 모두 적어주세요.");

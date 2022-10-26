@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import abi from "./abi/erc721Abi";
 import contractAddress from "./erc721.js";
-const centralAddress = "0xba86342176699Fb0aC42A2c9361d5EEd8de099B4";
+const centralAddress = "0x87A75C19b4d7023f6Ab6913c06c0e85F316c7855";
 
 const getContract = () => {
   // console.log('http://127.0.0.1:7545')
@@ -9,7 +9,7 @@ const getContract = () => {
   return new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
 };
 
-const getTonkenId = async (contract) => {
+const getTokenId = async (contract) => {
   return await contract.methods.totalSupply().call();
 };
 
@@ -66,22 +66,22 @@ const ownerOfToken = async (tokenId, address, web3) => {
     return false;
   }
 };
-const minting = async (address, web3) => {
+const minting = async (address, web3, tokenURI) => {
   try {
     const checkSumAddress = web3.utils.toChecksumAddress(address);
     console.log(checkSumAddress);
     try {
       const contract = await newContractMint(web3, checkSumAddress);
       console.log(contract);
-      const tokenId = await getTonkenId(contract);
+      const tokenId = await getTokenId(contract);
       console.log(tokenId);
       try {
-        const tokenURI = await contract.methods.tokenURI(tokenId).call();
-        console.log(tokenURI);
         const newNft = await contract.methods
-          .mintNFT(checkSumAddress, String(tokenURI))
+          .mintNFT(checkSumAddress, tokenURI)
           .send();
-        return tokenURI;
+        console.log("minting success");
+        console.log(tokenURI);
+        return tokenId;
       } catch (error) {
         console.log(error);
         return false;
@@ -139,4 +139,4 @@ const pay = async (_to, _from, price) => {
   }
   return false;
 };
-export { minting, getContract, ownerOfToken, transferToken, pay };
+export { getTokenId, minting, getContract, ownerOfToken, transferToken, pay };

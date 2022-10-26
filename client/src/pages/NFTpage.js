@@ -3,13 +3,20 @@ import { Link } from "react-router-dom";
 import TransferNFT from "../components/TransferNFT";
 import BuyNFT from "../components/BuyNFT";
 import SellNFT from "../components/SellNFT";
+import { getTokenId } from "../models";
 // import { getDatabase, ref, onValue } from "database"; // DB 코드는 임의로 정해 둔거에용!
 // import styled from "styled-components";
 import "../assets/NFTpage.css";
 
 const NFTpage = () => {
-  //     const [tokenObj, setTokenObj] = useState({tokenURL : "", tokenName : "", tokenOwner : ""});
-  //     const tokenId =  window.location.href.slice(32);
+  const [tokenObj, setTokenObj] = useState({
+    tokenURL: "",
+    tokenName: "",
+    tokenOwner: "",
+  });
+  const tokenId = window.location.href.slice(32);
+
+  const account = localStorage.getItem("userId");
 
   const [showTransfer, setShowTransfer] = useState(false);
   const [showBuy, setShowBuy] = useState(false);
